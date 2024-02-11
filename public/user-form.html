@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User form</title>
+  </head>
+  <body>
+    <h1>User form</h1>
+    <from id="userForm" name="userForm">
+      <label>First name</label><br />
+      <input type="text" name="userFirstName" id="userFirstName" value="Isaac" /><br /><br />
+      <label>Last name</label><br />
+      <input type="text" name="userLastName" id="userLastName" value="Newton" /><br /><br />
+      <label>Middle name</label><br />
+      <input type="text" name="userMiddleName" id="userMiddleName" value="" />
+      <input type="checkbox" name="hasMiddleName" id="hasMiddleName">
+      <br /><br />
+      <label>Age</label><br />
+      <input type="number" name="userAge" id="userAge" value="29" /><br /><br />
+      <button type="button" id="saveBtn">Сохранить</button>
+    </div>
+    <script>
+      const saveBtn = document.getElementById('saveBtn');
+
+      const hasMiddleNameCheckbox = document.getElementById('hasMiddleName')
+      hasMiddleNameCheckbox.addEventListener('change', (event) => {
+        const userMiddleNameInp = document.getElementById('userMiddleName');
+        if (event.currentTarget.checked) {
+          userMiddleNameInp.disabled = true;
+        } else {
+          userMiddleNameInp.disabled = false;
+        }
+      })
+
+      saveBtn.addEventListener('click', async(e) => {
+        const userFirstNameInp = document.getElementById('userFirstName');
+        const userLastNameInp = document.getElementById('userLastName');
+        const userMiddleNameInp = document.getElementById('userMiddleName');
+        const userAgeInp = document.getElementById('userAge');
+        const body = {
+          firstName: userFirstNameInp?.value,
+          lastName: userLastNameInp?.value,
+          middleName: hasMiddleNameCheckbox.checked ? userMiddleNameInp?.value : null,
+          age: userAgeInp?.value ? parseInt(userAgeInp.value) : null,
+        }
+
+        console.log(JSON.stringify(body));
+        const response = await fetch('/users/create', {
+          method: 'POST',
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+
+        console.log(response);
+        window.location.href = '/users';
+
+        // const responseBody = await response.json();
+        // console.log(responseBody);
+      });
+    </script>
+  </body>
+</html>
